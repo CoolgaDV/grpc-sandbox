@@ -7,11 +7,12 @@ import io.grpc.Channel;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 import static cdv.grpc.Utils.*;
 
-public class DeadlineCall {
+public class ServerStreaming {
 
     public static void main(String[] args) {
 
@@ -19,24 +20,21 @@ public class DeadlineCall {
         prepareServer(serverName, new Service());
         Channel channel = prepareChannel(serverName);
 
-        // This call should be failed due to deadline
-        EchoResponse response = EchoServiceGrpc.newBlockingStub(channel)
-                .withDeadlineAfter(1, TimeUnit.SECONDS)
-                .echoUnary(makeRequest("hello"));
+        var stub = EchoServiceGrpc.newBlockingStub(channel);
+        List<String> responses = new ArrayList<>();
+        stub.echoStreamServer(makeRequest("first"))
+                .forEachRemaining(response ->
+                        responses.add(response.getMessage()));
 
-        printResult(response.getMessage());
+        printResult(responses);
     }
 
     private static class Service extends EchoServiceGrpc.EchoServiceImplBase {
 
         @Override
-        public void echoUnary(EchoRequest request,
-                              StreamObserver<EchoResponse> responseObserver) {
-            try {
-                Thread.sleep(2_000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+        public void echoStreamServer(EchoRequest request,
+                                     StreamObserver<EchoResponse> responseObserver) {
+            responseObserver.onNext(makeResponse(request.getMessage()));
             responseObserver.onNext(makeResponse(request.getMessage()));
             responseObserver.onCompleted();
         }

@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 import static cdv.grpc.Utils.*;
 
-public class BidirectionalStreamingCall {
+public class BidirectionalStreaming {
 
     public static void main(String[] args) {
 

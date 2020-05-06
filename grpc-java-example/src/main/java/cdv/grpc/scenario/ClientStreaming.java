@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 import static cdv.grpc.Utils.*;
 
-public class ClientStreamingCall {
+public class ClientStreaming {
 
     public static void main(String[] args) {
 

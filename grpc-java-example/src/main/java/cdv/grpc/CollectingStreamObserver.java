@@ -15,6 +15,7 @@ public class CollectingStreamObserver
 
     @Override
     public void onNext(EchoResponse response) {
+        System.out.println(">> getting the response: " + response.getMessage());
         responses.add(response.getMessage());
     }
 
