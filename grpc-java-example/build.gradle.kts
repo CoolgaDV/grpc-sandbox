@@ -9,20 +9,24 @@ plugins {
 group = "cdv.example"
 version = "1.0-SNAPSHOT"
 
-val grpcVersion = "1.29.0"
-val protobufVersion = "3.11.0"
-val protocVersion = protobufVersion
-
 repositories {
     mavenCentral()
 }
+
+val grpcVersion = "1.29.0"
+val protobufVersion = "3.11.0"
+val lombokVersion = "1.18.12"
 
 dependencies {
     implementation("io.grpc:grpc-protobuf:${grpcVersion}")
     implementation("io.grpc:grpc-stub:${grpcVersion}")
     implementation("io.grpc:grpc-core:${grpcVersion}")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
+
     runtimeOnly("io.grpc:grpc-netty-shaded:${grpcVersion}")
+
+    compileOnly("org.projectlombok:lombok:${lombokVersion}")
+    annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 }
 
 protobuf {
