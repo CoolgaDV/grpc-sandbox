@@ -4,6 +4,8 @@ import cdv.grpc.model.EchoRequest;
 import cdv.grpc.model.EchoResponse;
 import io.grpc.BindableService;
 import io.grpc.Channel;
+import io.grpc.ServerInterceptor;
+import io.grpc.ServerInterceptors;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import lombok.AccessLevel;
@@ -31,11 +33,12 @@ public class Utils {
 
     @SneakyThrows
     public static void prepareServer(String serverName,
-                                     BindableService service) {
+                                     BindableService service,
+                                     ServerInterceptor... interceptors) {
         InProcessServerBuilder
                 .forName(serverName)
                 .directExecutor()
-                .addService(service)
+                .addService(ServerInterceptors.intercept(service, interceptors))
                 .build()
                 .start();
     }
